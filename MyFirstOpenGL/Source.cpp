@@ -7,8 +7,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <stb_image.h>
 #include <sstream>
+#include <stb_image.h>
 #include "Model.h"
 
 #define WINDOW_WIDTH 640
@@ -247,7 +247,7 @@ GLuint LoadGeometryShader(const std::string& filePath) {
 		glGetShaderInfoLog(geometryShader, logLength, nullptr, errorLog.data());
 
 		//Mostramos el log y finalizamos programa
-		std::cerr << "Se ha producido un error al cargar el vertex shader:  " << errorLog.data() << std::endl;
+		std::cerr << "Se ha producido un error al cargar el geometry shader:  " << errorLog.data() << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
 }
@@ -386,9 +386,9 @@ void main() {
 	//Indicamos lado del culling
 	glCullFace(GL_BACK);
 
-	//Leer Textura
+	//Leer textura
 	int width, height, nrChannels;
-	unsigned char* textureInfo = stbi_load("Assets/Textures/Cube_Texture.png", &width, &height, &nrChannels, 0);
+	unsigned char* textureInfo = stbi_load("Assets/Textures/troll.png", &width, &height, &nrChannels, 0);
 
 	//Inicializamos GLEW y controlamos errores
 	if (glewInit() == GLEW_OK) {
@@ -400,14 +400,17 @@ void main() {
 		myFirstProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
 		//Cargo Modelo
-		models.push_back(LoadOBJModel("Assets/Models/Alex_Cube.obj"));
+		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
 
-		//Definimos el canal de textura activo
+		//Definimos canal de textura activo
 		glActiveTexture(GL_TEXTURE0);
 
 		//Genero textura
 		GLuint textureID;
 		glGenTextures(1, &textureID);
+
+		//Vinculo textura con el canal de textura
+		glBindTexture(GL_TEXTURE_2D, textureID);
 
 		//Configurar textura
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -415,11 +418,8 @@ void main() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		//Cargar datos de la imagne a la textura
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureInfo);
-
-		//Vinculo textura con el canal de textura
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		//Cargar datos de la imagen a la textura
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureInfo);
 
 		//Generar mipmaps
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -443,14 +443,14 @@ void main() {
 		glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		//Asignar valor variable textura a usar
-		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"),0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
 
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
 
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
-			
+
 			//Limpiamos los buffers
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
