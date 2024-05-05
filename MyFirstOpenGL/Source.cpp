@@ -10,9 +10,14 @@
 #include <sstream>
 #include <stb_image.h>
 #include "Model.h"
+#include "GameObject.h"
+#include "Camera.h"
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH_DEFAULT 640
+#define WINDOW_HEIGHT_DEFAULT 480
+
+int windowWidth = WINDOW_WIDTH_DEFAULT;
+int windowHeight = WINDOW_HEIGHT_DEFAULT;
 
 std::vector<GLuint> compiledPrograms;
 std::vector<Model> models;
@@ -27,7 +32,9 @@ void Resize_Window(GLFWwindow* window, int iFrameBufferWidth, int iFrameBufferHe
 
 	//Definir nuevo tamaño del viewport
 	glViewport(0, 0, iFrameBufferWidth, iFrameBufferHeight);
-	glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), iFrameBufferWidth, iFrameBufferHeight);
+
+	windowWidth = iFrameBufferWidth;
+	windowHeight = iFrameBufferHeight;
 }
 
 //Funcion que leera un .obj y devolvera un modelo para poder ser renderizado
@@ -356,6 +363,9 @@ GLuint CreateProgram(const ShaderProgram& shaders) {
 
 void main() {
 
+	//Crear camara
+	Camera mainCamera;
+
 	//Definir semillas del rand según el tiempo
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -369,7 +379,7 @@ void main() {
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	//Inicializamos la ventana
-	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "My Engine", NULL, NULL);
 
 	//Asignamos función de callback para cuando el frame buffer es modificado
 	glfwSetFramebufferSizeCallback(window, Resize_Window);
@@ -396,8 +406,10 @@ void main() {
 		//Compilar shaders
 		ShaderProgram myFirstProgram;
 		myFirstProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
-		myFirstProgram.geometryShader = LoadGeometryShader("MyFirstGeometryShader.glsl");
+		myFirstProgram.geometryShader = LoadGeometryShader("GeometryShader.glsl");
 		myFirstProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
+
+		compiledPrograms[0] = CreateProgram(myFirstProgram);
 
 		//Cargo Modelo
 		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
@@ -440,7 +452,7 @@ void main() {
 		glUseProgram(compiledPrograms[0]);
 
 		//Asignar valores iniciales al programa
-		glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), WINDOW_WIDTH, WINDOW_HEIGHT);
+		glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
@@ -456,6 +468,20 @@ void main() {
 
 			//Renderizo objeto 0
 			models[0].Render();
+
+			//matrices de transformacion de los modelos
+
+			//matrices de la camara
+			glm::mat4 viewMatrix = glm::lookAt(mainCamera.GetPosition(),mainCamera.GetPosition() + glm::vec3(0.f,0.f,1.f), mainCamera.GetLocalVectorUp());
+
+			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.getFFov()), (float)windowWidth/(float)windowHeight, mainCamera.getFNEar(), mainCamera.GetFFar());
+
+
+			//pasar Uniforms
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+
 
 			//Cambiamos buffers
 			glFlush();

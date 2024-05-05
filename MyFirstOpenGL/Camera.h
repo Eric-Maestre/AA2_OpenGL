@@ -23,6 +23,14 @@ public:
 	float addFFar = 0.f;
 
 	void Update();
+
+	//Getters
+	glm::vec3 GetPosition();
+	glm::vec3 GetLocalVectorUp();
+
+	float getFFov();
+	float getFNEar();
+	float GetFFar();
 };
 
 
