@@ -4,10 +4,11 @@ layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 in vec2[] uvsGeometryShader;
+
 out vec2 uvsFragmentShader;
 
 uniform mat4 viewMatrix;
-uniform mat projectionMatrix;
+uniform mat4 projectionMatrix;
 
 void main(){
 
