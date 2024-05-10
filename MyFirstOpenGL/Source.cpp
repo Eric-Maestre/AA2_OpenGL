@@ -37,6 +37,23 @@ void Resize_Window(GLFWwindow* window, int iFrameBufferWidth, int iFrameBufferHe
 	windowHeight = iFrameBufferHeight;
 }
 
+glm::mat4 GenerateTranslationMatrix(glm::vec3 translation)
+{
+	return glm::translate(glm::mat4(1.f), translation);
+}
+
+
+glm::mat4 GenerateRotationMatrix(glm::vec3 axis, float degrees)
+{
+	return glm::rotate(glm::mat4(1.f), glm::radians(degrees), glm::normalize(axis));
+}
+
+
+glm::mat4 GenerateScaleMatrix(glm::vec3 scale)
+{
+	return glm::scale(glm::mat4(1.f), scale);
+}
+
 //Funcion que leera un .obj y devolvera un modelo para poder ser renderizado
 Model LoadOBJModel(const std::string& filePath) {
 
@@ -409,7 +426,10 @@ void main() {
 		myFirstProgram.geometryShader = LoadGeometryShader("GeometryShader.glsl");
 		myFirstProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
-		compiledPrograms[0] = CreateProgram(myFirstProgram);
+		ShaderProgram modelsProgram;
+		modelsProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		modelsProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		modelsProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
 		//Cargo Modelo
 		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
@@ -441,6 +461,7 @@ void main() {
 
 		//Compilar programa
 		compiledPrograms.push_back(CreateProgram(myFirstProgram));
+		compiledPrograms.push_back(CreateProgram(modelsProgram));
 
 		//Definimos color para limpiar el buffer de color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -457,6 +478,27 @@ void main() {
 		//Asignar valor variable textura a usar
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
 
+
+		//matrices de transformacion de los modelos
+		models[0].position = glm::vec3(0.f,0.f, -0.9f);
+		models[0].rotation = glm::vec3(0.f);
+		models[0].scale = glm::vec3(1.f);
+
+		//vectores para guardar la info de las matrices
+		std::vector <glm::mat4> modelsPositions;
+		std::vector <glm::mat4> modelsRotation;
+		std::vector <glm::mat4> modelsScale;
+
+		//no se mueven, se pueden instanciar antes del bucle y no las recalcula constantemente
+		for (int i = 0; i < 1; i++)
+		{
+			modelsPositions.push_back(GenerateTranslationMatrix(models[i].position));
+			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.x));
+			modelsScale.push_back(GenerateScaleMatrix(models[i].scale));
+		}
+
+
+
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
 
@@ -469,17 +511,22 @@ void main() {
 			//Renderizo objeto 0
 			models[0].Render();
 
-			//matrices de transformacion de los modelos
 
 			//matrices de la camara
-			glm::mat4 viewMatrix = glm::lookAt(mainCamera.GetPosition(),mainCamera.GetPosition() + glm::vec3(0.f,0.f,1.f), mainCamera.GetLocalVectorUp());
+			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.position + glm::vec3(0.f,0.f,1.f), mainCamera.localVectorUp);
 
-			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.getFFov()), (float)windowWidth/(float)windowHeight, mainCamera.getFNEar(), mainCamera.GetFFar());
+			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.fFov), (float)windowWidth/(float)windowHeight, mainCamera.fNear, mainCamera.fFar);
 
 
 			//pasar Uniforms
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
+
+
 
 
 
