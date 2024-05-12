@@ -480,7 +480,7 @@ void main() {
 
 
 		//matrices de transformacion de los modelos
-		models[0].position = glm::vec3(0.f,0.f, -0.9f);
+		models[0].position = glm::vec3(0.f,0.f, 1.f);
 		models[0].rotation = glm::vec3(0.f);
 		models[0].scale = glm::vec3(1.f);
 
@@ -501,6 +501,53 @@ void main() {
 
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
+
+			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			{
+				mainCamera.position.y += 0.01f;
+			}
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			{
+				mainCamera.position.y -= 0.01f;
+			}
+
+			//Derecha e izquierda
+			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			{
+				mainCamera.position.x += 0.01f;
+			}
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			{
+				mainCamera.position.x -= 0.01f;
+			}
+
+			//Adelante y atrás
+			if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+			{
+				mainCamera.position.z -= 0.01f;
+			}
+			if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+			{
+				mainCamera.position.z += 0.01f;
+			}
+
+			//zoom digital
+			if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+			{
+				mainCamera.fFov -= 1.f;
+				if (mainCamera.fFov < 1.f)
+				{
+					mainCamera.fFov = 1.f;
+				}
+			}
+			if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+			{
+				mainCamera.fFov += 1.f;
+				if (mainCamera.fFov > 180.f)
+				{
+					mainCamera.fFov = 180.f;
+				}
+			}
 
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
