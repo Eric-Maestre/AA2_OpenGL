@@ -28,7 +28,6 @@
   <ItemGroup>
     <None Include="GeometryOfModels.glsl" />
     <None Include="MyFirstFragmentShader.glsl" />
-    <None Include="GeometryShader.glsl" />
     <None Include="MyFirstVertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>

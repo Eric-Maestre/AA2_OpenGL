@@ -47,9 +47,6 @@
     <None Include="MyFirstVertexShader.glsl">
       <Filter>Shaders\Vertex Shader</Filter>
     </None>
-    <None Include="GeometryShader.glsl">
-      <Filter>Shaders\Geometry Shader</Filter>
-    </None>
     <None Include="MyFirstFragmentShader.glsl">
       <Filter>Shaders\Fragment Shader</Filter>
     </None>

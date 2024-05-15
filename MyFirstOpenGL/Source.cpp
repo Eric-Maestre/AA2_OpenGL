@@ -421,10 +421,6 @@ void main() {
 	if (glewInit() == GLEW_OK) {
 
 		//Compilar shaders
-		ShaderProgram myFirstProgram;
-		myFirstProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
-		myFirstProgram.geometryShader = LoadGeometryShader("GeometryShader.glsl");
-		myFirstProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
 		ShaderProgram modelsProgram;
 		modelsProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
@@ -460,7 +456,6 @@ void main() {
 		stbi_image_free(textureInfo);
 
 		//Compilar programa
-		compiledPrograms.push_back(CreateProgram(myFirstProgram));
 		compiledPrograms.push_back(CreateProgram(modelsProgram));
 
 		//Definimos color para limpiar el buffer de color
@@ -480,9 +475,9 @@ void main() {
 
 
 		//matrices de transformacion de los modelos
-		models[0].position = glm::vec3(0.f,0.f, 1.f);
-		models[0].rotation = glm::vec3(0.f);
-		models[0].scale = glm::vec3(1.f);
+		models[0].position = glm::vec3(0.f,0.f, 0.6f);
+		models[0].rotation = glm::vec3(360.f);
+		models[0].scale = glm::vec3(0.4f);
 
 		//vectores para guardar la info de las matrices
 		std::vector <glm::mat4> modelsPositions;
@@ -493,7 +488,7 @@ void main() {
 		for (int i = 0; i < 1; i++)
 		{
 			modelsPositions.push_back(GenerateTranslationMatrix(models[i].position));
-			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.x));
+			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.z));
 			modelsScale.push_back(GenerateScaleMatrix(models[i].scale));
 		}
 
@@ -501,53 +496,6 @@ void main() {
 
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
-
-			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			{
-				mainCamera.position.y += 0.01f;
-			}
-			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			{
-				mainCamera.position.y -= 0.01f;
-			}
-
-			//Derecha e izquierda
-			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			{
-				mainCamera.position.x += 0.01f;
-			}
-			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			{
-				mainCamera.position.x -= 0.01f;
-			}
-
-			//Adelante y atrás
-			if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-			{
-				mainCamera.position.z -= 0.01f;
-			}
-			if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-			{
-				mainCamera.position.z += 0.01f;
-			}
-
-			//zoom digital
-			if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-			{
-				mainCamera.fFov -= 1.f;
-				if (mainCamera.fFov < 1.f)
-				{
-					mainCamera.fFov = 1.f;
-				}
-			}
-			if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-			{
-				mainCamera.fFov += 1.f;
-				if (mainCamera.fFov > 180.f)
-				{
-					mainCamera.fFov = 180.f;
-				}
-			}
 
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
@@ -566,12 +514,13 @@ void main() {
 
 
 			//pasar Uniforms
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
+			//glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			//glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
 
 
 

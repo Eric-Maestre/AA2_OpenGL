@@ -11,12 +11,18 @@ uniform mat4 translationMatrix;
 uniform mat4 rotationMatrix;
 uniform mat4 scaleMatrix;
 
+//uniform mat4 viewMatrix;
+//uniform mat4 projectionMatrix;
+
+
 void main(){
 
 	mat4 model = translationMatrix * rotationMatrix * scaleMatrix;
 
+	//multiplicar por model
+
 	for(int i = 0; i < gl_in.length(); i++){
-		gl_Position = model * gl_in[i].gl_Position;
+		gl_Position = model *  gl_in[i].gl_Position;
 		uvsFragmentShader = uvsGeometryShader[i];
 		EmitVertex();
 	}
