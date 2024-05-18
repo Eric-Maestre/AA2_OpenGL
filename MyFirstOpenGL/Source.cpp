@@ -432,7 +432,8 @@ void main() {
 		ShaderProgram rightTrollProgram;
 		rightTrollProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
 		rightTrollProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
-		rightTrollProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
+		rightTrollProgram.fragmentShader = LoadFragmentShader("BlueTrollFragmentShader.glsl");
+
 
 		//shader tercer troll, color verde
 		ShaderProgram leftTrollProgram;
@@ -470,6 +471,7 @@ void main() {
 
 		//Compilar programa
 		compiledPrograms.push_back(CreateProgram(modelsProgram));
+		compiledPrograms.push_back(CreateProgram(rightTrollProgram));
 
 		//Definimos color para limpiar el buffer de color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -482,20 +484,23 @@ void main() {
 
 		//Asignar valores iniciales al programa
 		glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), windowWidth, windowHeight);
+		glUniform2f(glGetUniformLocation(compiledPrograms[1], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[1], "textureSampler"), 0);
+
 
 
 		//matrices de transformacion de los modelos
 		//primer troll, medio
-		models[0].position = glm::vec3(0.f,-0.2f, 0.6f);
+		models[0].position = glm::vec3(0.f,-0.4f, 0.6f);
 		models[0].rotation = glm::vec3(0.f, 180.f, 0.f);
 		models[0].scale = glm::vec3(0.4f);
 
 		//segundo troll, derecha
-		models[1].position = glm::vec3(0.5f, -0.4f, 0.4f);
-		models[1].rotation = glm::vec3(0.f, 0.f, 180.f);
+		models[1].position = glm::vec3(-0.9f, -0.6f, 0.4f);
+		models[1].rotation = glm::vec3(0.f, 90.f, 0.f);
 		models[1].scale = glm::vec3(0.4f);
 
 		//vectores para guardar la info de las matrices
@@ -504,7 +509,7 @@ void main() {
 		std::vector <glm::mat4> modelsScale;
 
 		//no se mueven, se pueden instanciar antes del bucle y no las recalcula constantemente
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < models.size(); i++)
 		{
 			modelsPositions.push_back(GenerateTranslationMatrix(models[i].position));
 			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.y));
@@ -520,27 +525,34 @@ void main() {
 			//Limpiamos los buffers
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-			//Renderizo objeto 0
-			models[0].Render();
-
-
 			//matrices de la camara
 			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.position + glm::vec3(0.f,0.f,1.f), mainCamera.localVectorUp);
 
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.fFov), (float)windowWidth/(float)windowHeight, mainCamera.fNear, mainCamera.fFar);
 
-
 			//pasar Uniforms
 
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			//todos los modelos les afecta por igual la camara
+			for (int i = 0; i < compiledPrograms.size(); i++)
+			{
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			}
 
+			//primer troll
+			glUseProgram(compiledPrograms[0]);
+			models[0].Render();
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
 
+			//segundo troll
+			glUseProgram(compiledPrograms[1]);
+			models[1].Render();
 
-
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[1]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[1]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[1]));
 
 
 			//Cambiamos buffers
@@ -551,6 +563,8 @@ void main() {
 		//Desactivar y eliminar programa
 		glUseProgram(0);
 		glDeleteProgram(compiledPrograms[0]);
+		glDeleteProgram(compiledPrograms[1]);
+
 
 	}
 	else {

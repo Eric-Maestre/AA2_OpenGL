@@ -53,6 +53,9 @@
     <None Include="GeometryOfModels.glsl">
       <Filter>Shaders\Geometry Shader</Filter>
     </None>
+    <None Include="BlueTrollFragmentShader.glsl">
+      <Filter>Shaders\Fragment Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
