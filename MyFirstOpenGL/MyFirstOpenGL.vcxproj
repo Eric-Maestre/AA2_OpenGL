@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Include="BlueTrollFragmentShader.glsl" />
     <None Include="GeometryOfModels.glsl" />
+    <None Include="GreenTrollFragmentShader.glsl" />
     <None Include="MyFirstFragmentShader.glsl" />
     <None Include="MyFirstVertexShader.glsl" />
   </ItemGroup>

@@ -13,7 +13,7 @@ void main() {
 
         vec4 baseColor = texture(textureSampler, adjustTexCoord);   
 
-        vec4 newColor = vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 newColor = vec4(0.0, 1.0, 0.0, 1.0);
 
         fragColor = baseColor * newColor;
 
