@@ -422,13 +422,26 @@ void main() {
 
 		//Compilar shaders
 
+		//shader primer troll, color normal
 		ShaderProgram modelsProgram;
 		modelsProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
 		modelsProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
 		modelsProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
+		//shader segundo troll, color azul
+		ShaderProgram rightTrollProgram;
+		rightTrollProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		rightTrollProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		rightTrollProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
+
+		//shader tercer troll, color verde
+		ShaderProgram leftTrollProgram;
+
 		//Cargo Modelo
+		//los modelos de troll son iguales, hago push del mismo tres veces
 		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
+		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
+		
 
 		//Definimos canal de textura activo
 		glActiveTexture(GL_TEXTURE0);
@@ -475,9 +488,15 @@ void main() {
 
 
 		//matrices de transformacion de los modelos
-		models[0].position = glm::vec3(0.f,0.f, 0.6f);
-		models[0].rotation = glm::vec3(360.f);
+		//primer troll, medio
+		models[0].position = glm::vec3(0.f,-0.2f, 0.6f);
+		models[0].rotation = glm::vec3(0.f, 180.f, 0.f);
 		models[0].scale = glm::vec3(0.4f);
+
+		//segundo troll, derecha
+		models[1].position = glm::vec3(0.5f, -0.4f, 0.4f);
+		models[1].rotation = glm::vec3(0.f, 0.f, 180.f);
+		models[1].scale = glm::vec3(0.4f);
 
 		//vectores para guardar la info de las matrices
 		std::vector <glm::mat4> modelsPositions;
@@ -488,11 +507,9 @@ void main() {
 		for (int i = 0; i < 1; i++)
 		{
 			modelsPositions.push_back(GenerateTranslationMatrix(models[i].position));
-			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.z));
+			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.y));
 			modelsScale.push_back(GenerateScaleMatrix(models[i].scale));
 		}
-
-
 
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
@@ -515,8 +532,8 @@ void main() {
 
 			//pasar Uniforms
 
-			//glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-			//glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
