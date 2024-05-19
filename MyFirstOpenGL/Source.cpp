@@ -529,11 +529,12 @@ void main() {
 		glUniform2f(glGetUniformLocation(compiledPrograms[i], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
-		for(int i = 0; i < 3; i++)
-		glUniform1i(glGetUniformLocation(compiledPrograms[i], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[1], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[2], "textureSampler"), 0);
 
-		for(int i = 3; i < compiledPrograms.size(); i++)
-		glUniform1i(glGetUniformLocation(compiledPrograms[i], "textureSampler"), 1);
+
+		glUniform1i(glGetUniformLocation(compiledPrograms[3], "textureSampler"), 1);
 
 
 		//matrices de transformacion de los modelos
@@ -611,38 +612,39 @@ void main() {
 
 			//primer troll
 			glUseProgram(compiledPrograms[0]);
-			models[0].Render();
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
+			models[0].Render();
 
 			//segundo troll
 			glUseProgram(compiledPrograms[1]);
-			models[1].Render();
 
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[1]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[1]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[1]));
+			models[1].Render();
+
 
 			//tercer troll
 			//al llamar al tercer programa afecta al anterior y lo borra
 			//si se pone el programa anterior otra vez salen ambos pero el color esta mal en este
 			glUseProgram(compiledPrograms[2]);
-			models[2].Render();
 
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[2]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[2]));
 			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[2]));
+			models[2].Render();
 
 			//tiene sentido, pero el bug va a más
 			//al activar esto cambia la textura del primer troll, por que el tercero directamente se borra
 			glUseProgram(compiledPrograms[3]);
 			for (int i = 3; i < 6; i++)
 			{
-				models[i].Render();
 				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[i]));
 				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[i]));
 				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[i]));
+				models[i].Render();
 			}
 			
 
