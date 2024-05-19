@@ -21,8 +21,15 @@ public:
 	float addFNear = 0.f;
 	float addFFar = 0.f;
 
+	bool stateOrbita = false;
+	bool stateGeneralThirdTroll = false;
+	bool stateDetalleSecondTroll = false;
+	bool stateDollyFirstTroll = false;
+
+
 	Camera();
 	void Update();
+	void changeState(int stateNumber);
 };
 
 

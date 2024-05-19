@@ -17,9 +17,9 @@ int InputManager::Update()
 	//casos posibles
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		keyPressed = GLFW_KEY_1;
-	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		keyPressed = GLFW_KEY_2;
-	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+	else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 		keyPressed = GLFW_KEY_3;
 
 	//comprobar ultima tecla pulsada y actual
@@ -29,5 +29,7 @@ int InputManager::Update()
 	{
 		return lastKeyPressed;
 	}
+
+	return 0;
 
 }

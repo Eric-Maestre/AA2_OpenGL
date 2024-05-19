@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "GameObject.h"
 #include "Camera.h"
+#include "InputManager.h"
 
 #define WINDOW_WIDTH_DEFAULT 640
 #define WINDOW_HEIGHT_DEFAULT 480
@@ -420,11 +421,14 @@ void main() {
 	int widthRock, heightRock, nrChannelsRock;
 	unsigned char* textureInfoRock = stbi_load("Assets/Textures/rock.png", &widthRock, &heightRock, &nrChannelsRock, 0);
 
+	//Crear InputManager
+	InputManager im(window);
 
 	//Inicializamos GLEW y controlamos errores
 	if (glewInit() == GLEW_OK) {
 
 		//Compilar shaders
+		mainCamera.Update();
 
 		//shader primer troll, color normal
 		ShaderProgram modelsProgram;
@@ -522,18 +526,22 @@ void main() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		//Indicar a la tarjeta GPU que programa debe usar
-		glUseProgram(compiledPrograms[0]);
 
 		//Asignar valores iniciales al programa
 		for(int i = 0; i < compiledPrograms.size(); i++)
 		glUniform2f(glGetUniformLocation(compiledPrograms[i], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
+		glUseProgram(compiledPrograms[0]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
+
+		glUseProgram(compiledPrograms[1]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[1], "textureSampler"), 0);
+
+		glUseProgram(compiledPrograms[2]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[2], "textureSampler"), 0);
 
-
+		glUseProgram(compiledPrograms[3]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[3], "textureSampler"), 1);
 
 
@@ -592,6 +600,15 @@ void main() {
 
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
+
+			//input Manager
+			int state = im.Update();
+
+			//camara state
+			mainCamera.changeState(state);
+
+			//depth test
+			glEnable(GL_DEPTH_TEST);
 
 			//Limpiamos los buffers
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
