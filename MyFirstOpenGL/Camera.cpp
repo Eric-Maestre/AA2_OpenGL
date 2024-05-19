@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <iostream>
 
 Camera::Camera()
 {
@@ -7,11 +8,38 @@ Camera::Camera()
 
 void Camera::Update()
 {
+	if (stateOrbita)
+	{
 
-	position += moveCameraVector;
-	
-	fFov += addFFov;
-	fNear += addFNear;
-	fFar += addFFar;
+	}
+}
+
+void Camera::changeState(int stateNumber)
+{
+	if (stateNumber == 1+48)
+	{
+		std::cout << "state 1" << std::endl;
+		bool stateOrbita = false;
+		bool stateGeneralThirdTroll = true;
+		bool stateDetalleSecondTroll = false;
+		bool stateDollyFirstTroll = false;
+	}
+	if (stateNumber == 2+48)
+	{
+		std::cout << "state 2" << std::endl;
+		bool stateOrbita = false;
+		bool stateGeneralThirdTroll = false;
+		bool stateDetalleSecondTroll = true;
+		bool stateDollyFirstTroll = false;
+	}
+	if (stateNumber == 3+48)
+	{
+		std::cout << "state 3" << std::endl;
+		bool stateOrbita = false;
+		bool stateGeneralThirdTroll = false;
+		bool stateDetalleSecondTroll = false;
+		bool stateDollyFirstTroll = true;
+	}
+
 }
 

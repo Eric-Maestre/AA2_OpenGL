@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "GameObject.h"
 #include "Camera.h"
+#include "InputManager.h"
 
 #define WINDOW_WIDTH_DEFAULT 640
 #define WINDOW_HEIGHT_DEFAULT 480
@@ -420,11 +421,14 @@ void main() {
 	int widthRock, heightRock, nrChannelsRock;
 	unsigned char* textureInfoRock = stbi_load("Assets/Textures/rock.png", &widthRock, &heightRock, &nrChannelsRock, 0);
 
+	//Crear InputManager
+	InputManager im(window);
 
 	//Inicializamos GLEW y controlamos errores
 	if (glewInit() == GLEW_OK) {
 
 		//Compilar shaders
+		mainCamera.Update();
 
 		//shader primer troll, color normal
 		ShaderProgram modelsProgram;
@@ -592,6 +596,15 @@ void main() {
 
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
+
+			//input Manager
+			int state = im.Update();
+
+			//camara state
+			mainCamera.changeState(state);
+
+			//depth test
+			glEnable(GL_DEPTH_TEST);
 
 			//Limpiamos los buffers
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
