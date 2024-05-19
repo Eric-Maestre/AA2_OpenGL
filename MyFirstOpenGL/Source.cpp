@@ -10,9 +10,14 @@
 #include <sstream>
 #include <stb_image.h>
 #include "Model.h"
+#include "GameObject.h"
+#include "Camera.h"
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH_DEFAULT 640
+#define WINDOW_HEIGHT_DEFAULT 480
+
+int windowWidth = WINDOW_WIDTH_DEFAULT;
+int windowHeight = WINDOW_HEIGHT_DEFAULT;
 
 std::vector<GLuint> compiledPrograms;
 std::vector<Model> models;
@@ -27,7 +32,26 @@ void Resize_Window(GLFWwindow* window, int iFrameBufferWidth, int iFrameBufferHe
 
 	//Definir nuevo tamaño del viewport
 	glViewport(0, 0, iFrameBufferWidth, iFrameBufferHeight);
-	glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), iFrameBufferWidth, iFrameBufferHeight);
+
+	windowWidth = iFrameBufferWidth;
+	windowHeight = iFrameBufferHeight;
+}
+
+glm::mat4 GenerateTranslationMatrix(glm::vec3 translation)
+{
+	return glm::translate(glm::mat4(1.f), translation);
+}
+
+
+glm::mat4 GenerateRotationMatrix(glm::vec3 axis, float degrees)
+{
+	return glm::rotate(glm::mat4(1.f), glm::radians(degrees), glm::normalize(axis));
+}
+
+
+glm::mat4 GenerateScaleMatrix(glm::vec3 scale)
+{
+	return glm::scale(glm::mat4(1.f), scale);
 }
 
 //Funcion que leera un .obj y devolvera un modelo para poder ser renderizado
@@ -356,6 +380,9 @@ GLuint CreateProgram(const ShaderProgram& shaders) {
 
 void main() {
 
+	//Crear camara
+	Camera mainCamera;
+
 	//Definir semillas del rand según el tiempo
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -369,7 +396,7 @@ void main() {
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	//Inicializamos la ventana
-	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "My Engine", NULL, NULL);
 
 	//Asignamos función de callback para cuando el frame buffer es modificado
 	glfwSetFramebufferSizeCallback(window, Resize_Window);
@@ -386,21 +413,52 @@ void main() {
 	//Indicamos lado del culling
 	glCullFace(GL_BACK);
 
-	//Leer textura
+	//Leer textura troll
 	int width, height, nrChannels;
 	unsigned char* textureInfo = stbi_load("Assets/Textures/troll.png", &width, &height, &nrChannels, 0);
+	//Leer textura piedra
+	int widthRock, heightRock, nrChannelsRock;
+	unsigned char* textureInfoRock = stbi_load("Assets/Textures/rock.png", &widthRock, &heightRock, &nrChannelsRock, 0);
+
 
 	//Inicializamos GLEW y controlamos errores
 	if (glewInit() == GLEW_OK) {
 
 		//Compilar shaders
-		ShaderProgram myFirstProgram;
-		myFirstProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
-		myFirstProgram.geometryShader = LoadGeometryShader("MyFirstGeometryShader.glsl");
-		myFirstProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
+
+		//shader primer troll, color normal
+		ShaderProgram modelsProgram;
+		modelsProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		modelsProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		modelsProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
+
+		//shader segundo troll, color azul
+		ShaderProgram rightTrollProgram;
+		rightTrollProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		rightTrollProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		rightTrollProgram.fragmentShader = LoadFragmentShader("BlueTrollFragmentShader.glsl");
+
+
+		//shader tercer troll, color verde
+		ShaderProgram leftTrollProgram;
+		leftTrollProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		leftTrollProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		leftTrollProgram.fragmentShader = LoadFragmentShader("GreenTrollFragmentShader.glsl");
+
+		//shader roca normal
+		ShaderProgram normalRockProgram;
+		normalRockProgram.vertexShader = LoadVertexShader("MyFirstVertexShader.glsl");
+		normalRockProgram.geometryShader = LoadGeometryShader("GeometryOfModels.glsl");
+		normalRockProgram.fragmentShader = LoadFragmentShader("MyFirstFragmentShader.glsl");
 
 		//Cargo Modelo
-		models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
+		//los modelos de troll son iguales, hago push del mismo tres veces
+		for (int i = 0; i < 3; i++)
+			models.push_back(LoadOBJModel("Assets/Models/troll.obj"));
+		//igual con las piedras, pero hay seis
+		for (int i = 0; i < 6; i++)
+			models.push_back(LoadOBJModel("Assets/Models/rock.obj"));
+
 
 		//Definimos canal de textura activo
 		glActiveTexture(GL_TEXTURE0);
@@ -427,8 +485,35 @@ void main() {
 		//Liberar recursos de memoria por la imagen cargada
 		stbi_image_free(textureInfo);
 
+		//Generar segunda textura roca
+		GLuint textureID2;
+		glGenTextures(1, &textureID2);
+
+		//vincular textura al espacio 1
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textureID2);
+
+		//configurar textura
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		//cargar datos de la imagen a la textura
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthRock, heightRock, 0, GL_RGB, GL_UNSIGNED_BYTE, textureInfoRock);
+
+		//generar mipmaps
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		//liberar recursos
+		stbi_image_free(textureInfoRock);
+
 		//Compilar programa
-		compiledPrograms.push_back(CreateProgram(myFirstProgram));
+		compiledPrograms.push_back(CreateProgram(modelsProgram));
+		compiledPrograms.push_back(CreateProgram(rightTrollProgram));
+		compiledPrograms.push_back(CreateProgram(leftTrollProgram));
+		compiledPrograms.push_back(CreateProgram(normalRockProgram));
+
 
 		//Definimos color para limpiar el buffer de color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -440,10 +525,67 @@ void main() {
 		glUseProgram(compiledPrograms[0]);
 
 		//Asignar valores iniciales al programa
-		glUniform2f(glGetUniformLocation(compiledPrograms[0], "windowSize"), WINDOW_WIDTH, WINDOW_HEIGHT);
+		for(int i = 0; i < compiledPrograms.size(); i++)
+		glUniform2f(glGetUniformLocation(compiledPrograms[i], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[1], "textureSampler"), 0);
+		glUniform1i(glGetUniformLocation(compiledPrograms[2], "textureSampler"), 0);
+
+
+		glUniform1i(glGetUniformLocation(compiledPrograms[3], "textureSampler"), 1);
+
+
+		//matrices de transformacion de los modelos
+		//primer troll, medio
+		models[0].position = glm::vec3(0.f,-0.4f, 0.6f);
+		models[0].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[0].scale = glm::vec3(0.4f);
+
+		//segundo troll, derecha
+		models[1].position = glm::vec3(-0.9f, -0.6f, 0.4f);
+		models[1].rotation = glm::vec3(0.f, 90.f, 0.f);
+		models[1].scale = glm::vec3(0.4f);
+
+		//tercer troll, izquierda
+		models[2].position = glm::vec3(0.9f, -0.6f, 0.4f);
+		models[2].rotation = glm::vec3(0.f, 270.f, 0.f);
+		models[2].scale = glm::vec3(0.4f);
+
+		//primer piedra, delante primer troll
+		models[3].position = glm::vec3(0.f, -0.6f, 0.4f);
+		models[3].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[3].scale = glm::vec3(0.4f);
+
+		//segunda piedra, piedra derecha
+		models[4].position = glm::vec3(0.3f, -0.7f, 0.3f);
+		models[4].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[4].scale = glm::vec3(0.4f);
+
+		//segunda piedra, piedra izquierda
+		models[5].position = glm::vec3(-0.3f, -0.7f, 0.3f);
+		models[5].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[5].scale = glm::vec3(0.4f);
+
+		//segunda piedra, piedra delantera
+		models[6].position = glm::vec3(0.f, -0.8f, 0.4f);
+		models[6].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[6].scale = glm::vec3(0.4f);
+
+
+		//vectores para guardar la info de las matrices
+		std::vector <glm::mat4> modelsPositions;
+		std::vector <glm::mat4> modelsRotation;
+		std::vector <glm::mat4> modelsScale;
+
+		//no se mueven, se pueden instanciar antes del bucle y no las recalcula constantemente
+		for (int i = 0; i < models.size(); i++)
+		{
+			modelsPositions.push_back(GenerateTranslationMatrix(models[i].position));
+			modelsRotation.push_back(GenerateRotationMatrix(models[i].rotation, models[i].rotation.y));
+			modelsScale.push_back(GenerateScaleMatrix(models[i].scale));
+		}
 
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
@@ -454,8 +596,57 @@ void main() {
 			//Limpiamos los buffers
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-			//Renderizo objeto 0
+			//matrices de la camara
+			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.position + glm::vec3(0.f,0.f,1.f), mainCamera.localVectorUp);
+
+			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.fFov), (float)windowWidth/(float)windowHeight, mainCamera.fNear, mainCamera.fFar);
+
+			//pasar Uniforms
+
+			//todos los modelos les afecta por igual la camara
+			for (int i = 0; i < compiledPrograms.size(); i++)
+			{
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			}
+
+			//primer troll
+			glUseProgram(compiledPrograms[0]);
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[0]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[0]));
 			models[0].Render();
+
+			//segundo troll
+			glUseProgram(compiledPrograms[1]);
+
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[1]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[1]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[1], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[1]));
+			models[1].Render();
+
+
+			//tercer troll
+			//al llamar al tercer programa afecta al anterior y lo borra
+			//si se pone el programa anterior otra vez salen ambos pero el color esta mal en este
+			glUseProgram(compiledPrograms[2]);
+
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[2]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[2]));
+			glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[2], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[2]));
+			models[2].Render();
+
+			//tiene sentido, pero el bug va a más
+			//al activar esto cambia la textura del primer troll, por que el tercero directamente se borra
+			glUseProgram(compiledPrograms[3]);
+			for (int i = 3; i < 6; i++)
+			{
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "translationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsPositions[i]));
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "rotationMatrix"), 1, GL_FALSE, glm::value_ptr(modelsRotation[i]));
+				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[0], "scaleMatrix"), 1, GL_FALSE, glm::value_ptr(modelsScale[i]));
+				models[i].Render();
+			}
+			
 
 			//Cambiamos buffers
 			glFlush();
@@ -465,6 +656,10 @@ void main() {
 		//Desactivar y eliminar programa
 		glUseProgram(0);
 		glDeleteProgram(compiledPrograms[0]);
+		glDeleteProgram(compiledPrograms[1]);
+		glDeleteProgram(compiledPrograms[2]);
+
+
 
 	}
 	else {

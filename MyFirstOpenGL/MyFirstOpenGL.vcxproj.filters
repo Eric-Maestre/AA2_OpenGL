@@ -47,10 +47,16 @@
     <None Include="MyFirstVertexShader.glsl">
       <Filter>Shaders\Vertex Shader</Filter>
     </None>
-    <None Include="MyFirstGeometryShader.glsl">
+    <None Include="MyFirstFragmentShader.glsl">
+      <Filter>Shaders\Fragment Shader</Filter>
+    </None>
+    <None Include="GeometryOfModels.glsl">
       <Filter>Shaders\Geometry Shader</Filter>
     </None>
-    <None Include="MyFirstFragmentShader.glsl">
+    <None Include="BlueTrollFragmentShader.glsl">
+      <Filter>Shaders\Fragment Shader</Filter>
+    </None>
+    <None Include="GreenTrollFragmentShader.glsl">
       <Filter>Shaders\Fragment Shader</Filter>
     </None>
   </ItemGroup>
