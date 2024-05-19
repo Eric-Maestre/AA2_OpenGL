@@ -526,18 +526,22 @@ void main() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		//Indicar a la tarjeta GPU que programa debe usar
-		glUseProgram(compiledPrograms[0]);
 
 		//Asignar valores iniciales al programa
 		for(int i = 0; i < compiledPrograms.size(); i++)
 		glUniform2f(glGetUniformLocation(compiledPrograms[i], "windowSize"), windowWidth, windowHeight);
 
 		//Asignar valor variable textura a usar
+		glUseProgram(compiledPrograms[0]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[0], "textureSampler"), 0);
+
+		glUseProgram(compiledPrograms[1]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[1], "textureSampler"), 0);
+
+		glUseProgram(compiledPrograms[2]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[2], "textureSampler"), 0);
 
-
+		glUseProgram(compiledPrograms[3]);
 		glUniform1i(glGetUniformLocation(compiledPrograms[3], "textureSampler"), 1);
 
 
