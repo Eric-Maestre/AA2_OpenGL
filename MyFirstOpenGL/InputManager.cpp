@@ -1,8 +1,5 @@
 #include "InputManager.h"
 
-
-
-
 InputManager::InputManager(GLFWwindow* window)
 {
 	this->window = window;
