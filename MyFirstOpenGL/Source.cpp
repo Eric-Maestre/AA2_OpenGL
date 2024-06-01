@@ -623,6 +623,7 @@ void main() {
 			//todos los modelos les afecta por igual la camara
 			for (int i = 0; i < compiledPrograms.size(); i++)
 			{
+				glUseProgram(compiledPrograms[i]);
 				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 				glUniformMatrix4fv(glGetUniformLocation(compiledPrograms[i], "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 			}
