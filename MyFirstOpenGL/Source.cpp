@@ -399,6 +399,9 @@ void main() {
 	//Inicializamos la ventana
 	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "My Engine", NULL, NULL);
 
+	//Iniciar Input Manager
+	IM.Init(window);
+
 	//Asignamos función de callback para cuando el frame buffer es modificado
 	glfwSetFramebufferSizeCallback(window, Resize_Window);
 
@@ -420,9 +423,6 @@ void main() {
 	//Leer textura piedra
 	int widthRock, heightRock, nrChannelsRock;
 	unsigned char* textureInfoRock = stbi_load("Assets/Textures/rock.png", &widthRock, &heightRock, &nrChannelsRock, 0);
-
-	//Crear InputManager
-	InputManager im(window);
 
 	//Inicializamos GLEW y controlamos errores
 	if (glewInit() == GLEW_OK) {
@@ -601,11 +601,11 @@ void main() {
 			//Pulleamos los eventos (botones, teclas, mouse...)
 			glfwPollEvents();
 
-			//input Manager
-			int state = im.Update();
+			//Input Manager Update
+			IM.Update();
 
 			//camara state
-			mainCamera.changeState(state);
+			mainCamera.Update();
 
 			//depth test
 			glEnable(GL_DEPTH_TEST);

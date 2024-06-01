@@ -3,6 +3,7 @@
 #define CAMERA_H	
 
 #include "GameObject.h"
+#include "InputManager.h"
 
 class Camera : public GameObject
 {
@@ -29,7 +30,7 @@ public:
 
 	Camera();
 	void Update();
-	void changeState(int stateNumber);
+	void ChangeState();
 };
 
 
