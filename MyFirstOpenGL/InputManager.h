@@ -1,4 +1,6 @@
 #pragma once
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
 
 #include <GLFW/glfw3.h>
 
@@ -38,3 +40,4 @@ public:
 
 };
 
+#endif 
