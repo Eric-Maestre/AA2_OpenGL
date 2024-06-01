@@ -38,7 +38,6 @@ void Model::Render() const {
 
     //Vinculo su VAO para ser usado
     glBindVertexArray(this->VAO);
-
     // Dibujamos
     glDrawArrays(GL_TRIANGLES, 0, this->numVertexs);
 

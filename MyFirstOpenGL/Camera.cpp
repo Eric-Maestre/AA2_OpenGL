@@ -8,14 +8,18 @@ Camera::Camera()
 
 void Camera::Update()
 {
+	ChangeState();
+
 	if (stateOrbita)
 	{
 
 	}
 }
 
-void Camera::changeState(int stateNumber)
+void Camera::ChangeState()
 {
+	int stateNumber = IM.GetKey();;
+
 	if (stateNumber == 1+48)
 	{
 		std::cout << "state 1" << std::endl;
