@@ -85,16 +85,16 @@ void main() {
 		mainCamera.Update();
 
 		//shader primer troll, color normal
-		models.push_back(Model("MyFirstVertexShader.glsl", "GeometryOfModels.glsl", "MyFirstFragmentShader.glsl", "Assets/Models/troll.obj"));
+		models.push_back(Model("MyFirstFragmentShader.glsl" , "GeometryOfModels.glsl","MyFirstVertexShader.glsl" , "Assets/Models/troll.obj"));
 
 		//shader segundo troll, color azul
-		models.push_back(Model("MyFirstVertexShader.glsl", "GeometryOfModels.glsl", "BlueTrollFragmentShader.glsl", "Assets/Models/troll.obj"));
+		models.push_back(Model("BlueTrollFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/troll.obj"));
 
 		//shader tercer troll, color verde
-		models.push_back(Model("MyFirstVertexShader.glsl", "GeometryOfModels.glsl", "GreenTrollFragmentShader.glsl", "Assets/Models/troll.obj"));
+		models.push_back(Model("GreenTrollFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/troll.obj"));
 
 		//shader roca normal
-		models.push_back(Model("MyFirstVertexShader.glsl", "GeometryOfModels.glsl", "MyFirstFragmentShader.glsl", "Assets/Models/rock.obj"));
+		models.push_back(Model("MyFirstFragmentShader.glsl", "GeometryOfModels.glsl","MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
 
 		//Definimos canal de textura activo
 		glActiveTexture(GL_TEXTURE0);

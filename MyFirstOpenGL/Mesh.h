@@ -12,6 +12,8 @@
 
 class Mesh {
 public:
+
+    Mesh() {};
     Mesh(const std::vector<float>& vertexs, const std::vector<float>& uvs, const std::vector<float>& normals);
     void Render() const;
 
