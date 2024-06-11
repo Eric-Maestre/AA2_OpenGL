@@ -13,8 +13,12 @@ void main() {
 
         vec4 baseColor = texture(textureSampler, adjustTexCoord);   
 
-        vec4 newColor = vec4(1.0, 1.0, 1.0, 1.0);
+        vec4 whiteColor = vec4(1.0, 1.0, 1.0, 1.0);
 
-        fragColor = baseColor * newColor;
+        float blendFactor = 0.8;
+
+        vec4 mixedColor = mix(baseColor, whiteColor, blendFactor);
+
+        fragColor = mixedColor;
 
 }
