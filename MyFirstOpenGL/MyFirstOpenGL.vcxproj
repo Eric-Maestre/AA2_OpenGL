@@ -33,6 +33,7 @@
     <None Include="GreenTrollFragmentShader.glsl" />
     <None Include="MyFirstFragmentShader.glsl" />
     <None Include="MyFirstVertexShader.glsl" />
+    <None Include="WhiteCloudFragmentShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />

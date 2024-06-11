@@ -65,6 +65,9 @@
     <None Include="GreenTrollFragmentShader.glsl">
       <Filter>Shaders\Fragment Shader</Filter>
     </None>
+    <None Include="WhiteCloudFragmentShader.glsl">
+      <Filter>Shaders\Fragment Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">

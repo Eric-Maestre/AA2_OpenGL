@@ -95,6 +95,13 @@ void main() {
 
 		//shader roca normal
 		models.push_back(Model("MyFirstFragmentShader.glsl", "GeometryOfModels.glsl","MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
+		models.push_back(Model("MyFirstFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
+		models.push_back(Model("MyFirstFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
+		models.push_back(Model("MyFirstFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
+
+		//sahder nube roca
+		models.push_back(Model("WhiteCloudFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
+		models.push_back(Model("WhiteCloudFragmentShader.glsl", "GeometryOfModels.glsl", "MyFirstVertexShader.glsl", "Assets/Models/rock.obj"));
 
 		//Definimos canal de textura activo
 		glActiveTexture(GL_TEXTURE0);
@@ -161,15 +168,17 @@ void main() {
 		}
 
 		//Asignar valor variable textura a usar
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			glUseProgram(models[i].GetProgram());
 			glUniform1i(glGetUniformLocation(models[i].GetProgram(), "textureSampler"), 0);
 		}
 
-		glUseProgram(models[3].GetProgram());
-		glUniform1i(glGetUniformLocation(models[3].GetProgram(), "textureSampler"), 1);
-
+		for (int i = 3; i < models.size(); i++)
+		{
+			glUseProgram(models[i].GetProgram());
+			glUniform1i(glGetUniformLocation(models[i].GetProgram(), "textureSampler"), 1);
+		}
 
 		//matrices de transformacion de los modelos
 		//primer troll, medio
@@ -189,26 +198,33 @@ void main() {
 
 		//primer piedra, delante primer troll
 		models[3].position = glm::vec3(0.f, -0.6f, 0.4f);
-		models[3].rotation = glm::vec3(0.f, 180.f, 0.f);
-		models[3].scale = glm::vec3(0.4f);
+		models[3].rotation = glm::vec3(0.f, 360.f, 0.f);
+		models[3].scale = glm::vec3(0.2f);
 
+		//segunda piedra, piedra derecha
+		models[4].position = glm::vec3(0.3f, -0.7f, 0.3f);
+		models[4].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[4].scale = glm::vec3(0.2f);
 
-		//por el momento lo desactivo
+		//tercera piedra, piedra izquierda
+		models[5].position = glm::vec3(-0.3f, -0.7f, 0.3f);
+		models[5].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[5].scale = glm::vec3(0.2f);
 
-		////segunda piedra, piedra derecha
-		//models[4].position = glm::vec3(0.3f, -0.7f, 0.3f);
-		//models[4].rotation = glm::vec3(0.f, 180.f, 0.f);
-		//models[4].scale = glm::vec3(0.4f);
+		//cuarta piedra, piedra delantera
+		models[6].position = glm::vec3(0.f, -0.8f, 0.2f);
+		models[6].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[6].scale = glm::vec3(0.2f);
 
-		////segunda piedra, piedra izquierda
-		//models[5].position = glm::vec3(-0.3f, -0.7f, 0.3f);
-		//models[5].rotation = glm::vec3(0.f, 180.f, 0.f);
-		//models[5].scale = glm::vec3(0.4f);
+		//primera nube, izquierda
+		models[7].position = glm::vec3(-0.5f, 0.8f, 0.2f);
+		models[7].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[7].scale = glm::vec3(0.2f);
 
-		////segunda piedra, piedra delantera
-		//models[6].position = glm::vec3(0.f, -0.8f, 0.4f);
-		//models[6].rotation = glm::vec3(0.f, 180.f, 0.f);
-		//models[6].scale = glm::vec3(0.4f);
+		//segunda nube, derecha
+		models[8].position = glm::vec3(0.4f, 0.7f, 0.2f);
+		models[8].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[8].scale = glm::vec3(0.2f);
 
 		for (int i = 0; i < models.size(); i++)
 			models[i].GenerateAllMatrixs();
@@ -244,19 +260,8 @@ void main() {
 				glUseProgram(models[i].GetProgram());
 				glUniformMatrix4fv(glGetUniformLocation(models[i].GetProgram(), "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
 				glUniformMatrix4fv(glGetUniformLocation(models[i].GetProgram(), "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+				models[i].Update();
 			}
-
-			//primer troll
-			models[0].Update();
-
-			//segundo troll
-			models[1].Update();
-
-			//tercer troll
-			models[2].Update();
-
-			//roca 1
-			models[3].Update();
 
 			//Cambiamos buffers
 			glFlush();
