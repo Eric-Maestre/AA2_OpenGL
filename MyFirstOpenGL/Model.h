@@ -13,15 +13,14 @@ private:
 	//Mesh
 	Mesh myMesh;
 
-	//bool para el eje de rotacion
-	bool rotationAngleX = false;
-	bool rotationAngleY = true;
-	bool rotationAngleZ = false;
-
 	glm::mat4 modelPosition;
 	glm::mat4 modelRotation;
 	glm::mat4 modelScale;
 
+	//bool para el eje de rotacion
+	bool rotationAngleX = false;
+	bool rotationAngleY = true;
+	bool rotationAngleZ = false;
 
 	// Funcion que leera un.obj y devolvera un modelo para poder ser renderizado
 	Mesh LoadOBJMesh(const std::string& filePath);
@@ -39,6 +38,11 @@ public:
 	GLuint GetProgram() { return compiledProgram; }
 
 	void Update();
+
+	void SetRotationAngleX() { rotationAngleX = true; rotationAngleY = false; rotationAngleZ = false; }
+	void SetRotationAngleY() { rotationAngleX = false; rotationAngleY = true; rotationAngleZ = false; }
+	void SetRotationAngleZ() { rotationAngleX = false; rotationAngleY = false; rotationAngleZ = true; }
+
 };
 
 #endif

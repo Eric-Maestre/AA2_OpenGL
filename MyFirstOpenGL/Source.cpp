@@ -196,34 +196,40 @@ void main() {
 		models[2].rotation = glm::vec3(0.f, 270.f, 0.f);
 		models[2].scale = glm::vec3(0.4f);
 
+		//cambiar el eje de rotacion de los modelos
+		for (int i = 3; i < models.size(); i++)
+		{
+			models[i].SetRotationAngleZ();
+		}
+
 		//primer piedra, delante primer troll
 		models[3].position = glm::vec3(0.f, -0.6f, 0.4f);
-		models[3].rotation = glm::vec3(0.f, 360.f, 0.f);
+		models[3].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[3].scale = glm::vec3(0.2f);
 
 		//segunda piedra, piedra derecha
 		models[4].position = glm::vec3(0.3f, -0.7f, 0.3f);
-		models[4].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[4].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[4].scale = glm::vec3(0.2f);
 
 		//tercera piedra, piedra izquierda
 		models[5].position = glm::vec3(-0.3f, -0.7f, 0.3f);
-		models[5].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[5].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[5].scale = glm::vec3(0.2f);
 
 		//cuarta piedra, piedra delantera
 		models[6].position = glm::vec3(0.f, -0.8f, 0.2f);
-		models[6].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[6].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[6].scale = glm::vec3(0.2f);
 
 		//primera nube, izquierda
-		models[7].position = glm::vec3(-0.5f, 0.8f, 0.2f);
-		models[7].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[7].position = glm::vec3(-0.6f, 0.8f, 0.2f);
+		models[7].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[7].scale = glm::vec3(0.2f);
 
 		//segunda nube, derecha
-		models[8].position = glm::vec3(0.4f, 0.7f, 0.2f);
-		models[8].rotation = glm::vec3(0.f, 180.f, 0.f);
+		models[8].position = glm::vec3(0.6f, 0.7f, 0.2f);
+		models[8].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[8].scale = glm::vec3(0.2f);
 
 		for (int i = 0; i < models.size(); i++)
