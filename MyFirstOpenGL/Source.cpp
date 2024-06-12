@@ -82,7 +82,7 @@ void main() {
 	if (glewInit() == GLEW_OK) {
 
 		//Compilar shaders
-		mainCamera.Update();
+		mainCamera.Update(0.4);
 
 		//shader primer troll, color normal
 		models.push_back(Model("MyFirstFragmentShader.glsl" , "GeometryOfModels.glsl","MyFirstVertexShader.glsl" , "Assets/Models/troll.obj"));
@@ -182,17 +182,17 @@ void main() {
 
 		//matrices de transformacion de los modelos
 		//primer troll, medio
-		models[0].position = glm::vec3(0.f,-0.4f, 0.6f);
+		models[0].position = glm::vec3(0.f,0.f, 0.8f);
 		models[0].rotation = glm::vec3(0.f, 180.f, 0.f);
 		models[0].scale = glm::vec3(0.4f);
 
 		//segundo troll, derecha
-		models[1].position = glm::vec3(-0.9f, -0.6f, 0.4f);
+		models[1].position = glm::vec3(-0.9f, 0.f, 0.4f);
 		models[1].rotation = glm::vec3(0.f, 90.f, 0.f);
 		models[1].scale = glm::vec3(0.4f);
 
 		//tercer troll, izquierda
-		models[2].position = glm::vec3(0.9f, -0.6f, 0.4f);
+		models[2].position = glm::vec3(0.9f, 0.f, 0.4f);
 		models[2].rotation = glm::vec3(0.f, 270.f, 0.f);
 		models[2].scale = glm::vec3(0.4f);
 
@@ -203,32 +203,32 @@ void main() {
 		}
 
 		//primer piedra, delante primer troll
-		models[3].position = glm::vec3(0.f, -0.6f, 0.4f);
+		models[3].position = glm::vec3(0.f, 0.f, 0.4f);
 		models[3].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[3].scale = glm::vec3(0.2f);
 
 		//segunda piedra, piedra derecha
-		models[4].position = glm::vec3(0.3f, -0.7f, 0.3f);
+		models[4].position = glm::vec3(0.3f, 0.f, 0.2f);
 		models[4].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[4].scale = glm::vec3(0.2f);
 
 		//tercera piedra, piedra izquierda
-		models[5].position = glm::vec3(-0.3f, -0.7f, 0.3f);
+		models[5].position = glm::vec3(-0.3f, 0.f, 0.2f);
 		models[5].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[5].scale = glm::vec3(0.2f);
 
 		//cuarta piedra, piedra delantera
-		models[6].position = glm::vec3(0.f, -0.8f, 0.2f);
+		models[6].position = glm::vec3(0.f, 0.f, 0.f);
 		models[6].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[6].scale = glm::vec3(0.2f);
 
 		//primera nube, izquierda
-		models[7].position = glm::vec3(-0.6f, 0.8f, 0.2f);
+		models[7].position = glm::vec3(-0.6f, 0.8f, 1.f);
 		models[7].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[7].scale = glm::vec3(0.2f);
 
 		//segunda nube, derecha
-		models[8].position = glm::vec3(0.6f, 0.7f, 0.2f);
+		models[8].position = glm::vec3(0.6f, 0.7f, 1.f);
 		models[8].rotation = glm::vec3(0.f, 0.f, 90.f);
 		models[8].scale = glm::vec3(0.2f);
 
@@ -245,7 +245,7 @@ void main() {
 			IM.Update();
 
 			//camara state
-			mainCamera.Update();
+			mainCamera.Update(0.4);
 
 			//depth test
 			glEnable(GL_DEPTH_TEST);
@@ -254,7 +254,7 @@ void main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 			//matrices de la camara
-			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.position + glm::vec3(0.f,0.f,1.f), mainCamera.localVectorUp);
+			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.center, mainCamera.localVectorUp);
 
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.fFov), (float)windowWidth/(float)windowHeight, mainCamera.fNear, mainCamera.fFar);
 

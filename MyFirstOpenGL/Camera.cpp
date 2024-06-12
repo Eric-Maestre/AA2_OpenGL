@@ -3,16 +3,22 @@
 
 Camera::Camera()
 {
-	position = glm::vec3(0.f, 0.f, -1.f);
+	position = glm::vec3(0.f, 1.f, -1.f);
 }
 
-void Camera::Update()
+void Camera::Update(float dt)
 {
 	ChangeState();
 
 	if (stateOrbita)
 	{
+		angle += rotationSpeed * dt;
+		position.x = center.x + radius * cos(angle);
+		position.z = center.z + radius * sin(angle);
+		std::cout << radius << std::endl;
 
+		if (angle >= 360 + originalAngle)
+			angle = originalAngle;
 	}
 }
 

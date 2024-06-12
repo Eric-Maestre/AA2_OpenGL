@@ -22,14 +22,24 @@ public:
 	float addFNear = 0.f;
 	float addFFar = 0.f;
 
-	bool stateOrbita = false;
+	//varaibles para el movimiento orbital
+	float angle = 0.f;
+	float rotationSpeed = glm::radians(1.0f);
+	float radius = 2.f;
+	glm::vec3 center = glm::vec3(0.f);
+
+	//angle se actualiza, posicion original por si me interesa que empiece siempre en el mismo sitio
+	float originalAngle = angle;
+
+
+	bool stateOrbita = true;
 	bool stateGeneralThirdTroll = false;
 	bool stateDetalleSecondTroll = false;
 	bool stateDollyFirstTroll = false;
 
 
 	Camera();
-	void Update();
+	void Update(float dt);
 	void ChangeState();
 };
 
