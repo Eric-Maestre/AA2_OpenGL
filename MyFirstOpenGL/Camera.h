@@ -17,11 +17,6 @@ public:
 	//vector para mover camera 
 	glm::vec3  moveCameraVector = glm::vec3(0.f);
 
-	//float para aumentar o disminuir fFoc, fNear y fFar
-	float addFFov = 0.f;
-	float addFNear = 0.f;
-	float addFFar = 0.f;
-
 	//varaibles para el movimiento orbital
 	float angle = 0.f;
 	float rotationSpeed = glm::radians(1.0f);
@@ -31,6 +26,8 @@ public:
 	//angle se actualiza, posicion original por si me interesa que empiece siempre en el mismo sitio
 	float originalAngle = angle;
 
+	//para guardar la posicion original 
+	glm::vec3 originalPos;
 
 	bool stateOrbita = true;
 	bool stateGeneralThirdTroll = false;

@@ -187,12 +187,12 @@ void main() {
 		models[0].scale = glm::vec3(0.4f);
 
 		//segundo troll, derecha
-		models[1].position = glm::vec3(-0.9f, 0.f, 0.4f);
+		models[1].position = glm::vec3(-1.f, 0.f, 0.2f);
 		models[1].rotation = glm::vec3(0.f, 90.f, 0.f);
 		models[1].scale = glm::vec3(0.4f);
 
 		//tercer troll, izquierda
-		models[2].position = glm::vec3(0.9f, 0.f, 0.4f);
+		models[2].position = glm::vec3(1.f, 0.f, 0.2f);
 		models[2].rotation = glm::vec3(0.f, 270.f, 0.f);
 		models[2].scale = glm::vec3(0.4f);
 
@@ -235,6 +235,8 @@ void main() {
 		for (int i = 0; i < models.size(); i++)
 			models[i].GenerateAllMatrixs();
 
+		glm::mat4 viewMatrix;
+
 		//Generamos el game loop
 		while (!glfwWindowShouldClose(window)) {
 
@@ -254,7 +256,14 @@ void main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 			//matrices de la camara
-			glm::mat4 viewMatrix = glm::lookAt(mainCamera.position,mainCamera.center, mainCamera.localVectorUp);
+			if(mainCamera.stateOrbita)
+			viewMatrix = glm::lookAt(mainCamera.position,mainCamera.center, mainCamera.localVectorUp);
+			else if(mainCamera.stateGeneralThirdTroll)
+			viewMatrix = glm::lookAt(mainCamera.position, models[2].position, mainCamera.localVectorUp);
+			else if(mainCamera.stateDetalleSecondTroll)
+			viewMatrix = glm::lookAt(mainCamera.position, models[1].position, mainCamera.localVectorUp);
+
+
 
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(mainCamera.fFov), (float)windowWidth/(float)windowHeight, mainCamera.fNear, mainCamera.fFar);
 
