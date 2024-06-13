@@ -23,6 +23,11 @@ public:
 	float radius = 2.f;
 	glm::vec3 center = glm::vec3(0.f);
 
+	//variables para el dolly zoom effect
+	float dollySpeed = 1.0f;
+	float fovSpeed = 30.f;
+
+
 	//angle se actualiza, posicion original por si me interesa que empiece siempre en el mismo sitio
 	float originalAngle = angle;
 

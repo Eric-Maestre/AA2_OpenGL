@@ -262,6 +262,9 @@ void main() {
 			viewMatrix = glm::lookAt(mainCamera.position, models[2].position, mainCamera.localVectorUp);
 			else if(mainCamera.stateDetalleSecondTroll)
 			viewMatrix = glm::lookAt(mainCamera.position, models[1].position, mainCamera.localVectorUp);
+			else if(mainCamera.stateDollyFirstTroll)
+			viewMatrix = glm::lookAt(mainCamera.position, models[0].position, mainCamera.localVectorUp);
+
 
 
 

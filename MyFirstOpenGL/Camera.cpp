@@ -30,6 +30,20 @@ void Camera::Update(float dt)
 		//plano detalle del cuerno
 		position = glm::vec3(-0.6f, 1.3f, 0.f);
 	}
+	else if (stateDollyFirstTroll)
+	{
+		//dolly zoom effect
+		position.z -= + dollySpeed * dt;
+		fFov += fovSpeed * dt;
+
+		if (position.z <= originalPos.z)
+		{
+			position = originalPos;
+			stateDollyFirstTroll = false;
+			stateOrbita = true;
+			angle = originalAngle;
+		}
+	}
 
 }
 
@@ -72,6 +86,10 @@ void Camera::ChangeState()
 		fFov = 90.f;
 		fNear = 0.1f;
 		fFar = 10.f;
+
+		//actualizar posicion en el change state 
+		//ya que hay movimiento en el Update
+		position = glm::vec3(0.f, 1.f, 0.1f);
 	}
 
 }
